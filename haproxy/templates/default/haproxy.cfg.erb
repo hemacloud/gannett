@@ -1,0 +1,9 @@
+frontend haproxy_in
+    bind *:80
+    default_backend haproxy_http
+
+backend haproxy_http
+    balance roundrobin
+    mode http
+    server webserver01 www.yahoo.com:80 check
+server webserver02 www.google.com:80 check
