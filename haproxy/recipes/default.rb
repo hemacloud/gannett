@@ -1,4 +1,3 @@
-#
 # Cookbook Name:: haproxy
 # Recipe:: default
 #
@@ -6,19 +5,5 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-package 'haproxy' do
-  retries 3
-  retry_delay 5
-
-  action :install
-end
-template '/etc/haproxy/haproxy.cfg' do
-  source 'haproxy.cfg.erb'
-  owner 'root'
-  group 'root'
-  mode 0644
-  notifies :restart, 'service[haproxy]'
-end
-service 'haproxy' do
-  action [:enable, :start]
-end
+include_recipe 'haproxy::haproxy_source'
+# include_recipe 'haproxy::haproxy_yum'
