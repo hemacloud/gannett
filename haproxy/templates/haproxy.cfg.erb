@@ -1,0 +1,28 @@
+global
+   log /dev/log local0
+   log /dev/log local1 notice
+   chroot /var/lib/haproxy
+   stats socket /run/haproxy/admin.sock mode 660 level admin
+   stats timeout 30s
+   user haproxy
+   group haproxy
+   daemon
+
+defaults
+   log global
+   mode http
+   option httplog
+   option dontlognull
+   timeout connect 5000
+   timeout client 50000
+   timeout server 50000
+
+frontend http_front
+   bind *:<%= node[:backend][:port]%>
+   stats uri /haproxy?stats
+   default_backend http_back
+
+backend http_back
+    balance <%= node[:haproxy][:balance_algorithm]%>
+    option httpchk
+    server app <%= node[:haproxy][:backend]%>:<%= node[:backend][:port]%>
