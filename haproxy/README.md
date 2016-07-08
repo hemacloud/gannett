@@ -14,6 +14,8 @@ Create a chef cookbook to install HA-Proxy on a centos 6.7 server. Please use th
 - Leverage custom resources or LWRP to manage the front and back ends
 - project to be delivered on github and be able to run kitchen verify from any laptop using the environment outlined above to execute a successful creation and testing of the cookbook
 
+Pending items: 
+- implement LWRP libraries for haproxy install/start/restart
 
 ### Prerequisites
 * ChefDK setup
@@ -32,6 +34,10 @@ cd haproxy
 
 Run manual test
 
+unit test using chefspec: 
+/opt/chefdk/embedded/bin/rspec spec/*
+
+Using kitchen/serverspec:
 kitchen list (optional to see available instance)
 
 kitchen create  default-bento-centos-67 (to create the Virtual instance)
@@ -45,7 +51,6 @@ kitchen destroy default-bento-centos-67 (remove the instance )
 single "kitchen test default-bento-centos-67" command will do all above listed four task create, converge, verify and destroy in one go  
 
 ```
-
 
 
 ### Platforms
