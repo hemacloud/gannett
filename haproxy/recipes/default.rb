@@ -1,3 +1,4 @@
+
 # Cookbook Name:: haproxy
 # Recipe:: default
 #
@@ -7,3 +8,8 @@
 #
 include_recipe 'haproxy::haproxy_source'
 # include_recipe 'haproxy::haproxy_yum'
+# case node['instlation']
+# when 'source'
+# do things on debian-ish platforms (debian, ubuntu, linuxmint)
+# when 'yum'
+# end

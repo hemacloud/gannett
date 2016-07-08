@@ -9,13 +9,14 @@ require 'spec_helper'
 describe 'haproxy::haproxy_source' do
   context 'when run on CentOS 6.7' do
     let(:chef_run) do
-      runner = ChefSpec::ServerRunner.new
+      runner = ChefSpec::ServerRunner.new(step_into: ['haproxy'])
       runner.converge(described_recipe)
     end
 
     it 'converges successfully' do
       expect { chef_run }.to_not raise_error
     end
+
     it 'installs make' do
       expect(chef_run).to install_package 'make'
     end
@@ -28,8 +29,29 @@ describe 'haproxy::haproxy_source' do
     it 'installs pcre-devel' do
       expect(chef_run).to install_package 'pcre-devel'
     end
-    it 'downloads pakage source code tar' do
+    it 'installs coustom resource' do
+      expect(chef_run).to install_haproxy '1.6.3'
+    end
+
+    it 'downloads package source code tar' do
       expect(chef_run).to create_remote_file "#{Chef::Config[:file_cache_path]}/haproxy-1.6.3.tar.gz"
+    end
+    it 'downloads package source code tar' do
+      expect(chef_run).to create_remote_file "#{Chef::Config[:file_cache_path]}/haproxy-1.6.3.tar.gz"
+    end
+    it 'unzip tar file' do
+      resource = chef_run.remote_file "#{Chef::Config[:file_cache_path]}/haproxy-1.6.3.tar.gz"
+      expect(resource).to notify('execute[unzip_archive]').to(:run).immediately
+      #      expect(chef_run).to run_execute('unzip_archive')
+    end
+    it 'install the haproxy from source' do
+      resource = chef_run.execute('unzip_archive')
+      expect(resource).to notify('execute[install_haproxy]').to(:run).immediately
+    end
+
+    it 'configure haproxy' do
+      resource = chef_run.execute('install_haproxy')
+      expect(resource).to notify('bash[configure]').to(:run).immediately
     end
 
     it 'enables the haproxy service' do
